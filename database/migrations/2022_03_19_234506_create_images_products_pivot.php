@@ -13,15 +13,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('personal_access_tokens', function (Blueprint $table) {
+        Schema::create('images_products_pivot', function (Blueprint $table) {
             $table->engine = 'InnoDB';
 
             $table->id();
-            $table->morphs('tokenable');
-            $table->string('name');
-            $table->string('token', 64)->unique();
-            $table->text('abilities')->nullable();
-            $table->timestamp('last_used_at')->nullable();
+            $table->unsignedBigInteger('images_id');
+            $table->foreign('images_id')
+                  ->references('id')
+                  ->on('images')->onDelete('cascade');
+
+            $table->unsignedBigInteger('products_id');
+            $table->foreign('products_id')
+                ->references('id')
+                ->on('products')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -33,7 +37,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('personal_access_tokens');
+        Schema::dropIfExists('images_products_pivot');
     }
 };
 ?>
